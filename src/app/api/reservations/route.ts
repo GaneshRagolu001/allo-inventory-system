@@ -17,37 +17,6 @@ export async function POST(req: NextRequest) {
     const { productId, warehouseId, quantity } = validatedData;
 
     const result = await prisma.$transaction(async (tx) => {
-      const expiredReservations = await tx.reservation.findMany({
-        where: {
-          status: "PENDING",
-          expiresAt: {
-            lt: new Date(),
-          },
-        },
-      });
-
-      for (const expired of expiredReservations) {
-        await tx.inventory.updateMany({
-          where: {
-            productId: expired.productId,
-            warehouseId: expired.warehouseId,
-          },
-          data: {
-            reservedUnits: {
-              decrement: expired.quantity,
-            },
-          },
-        });
-
-        await tx.reservation.update({
-          where: {
-            id: expired.id,
-          },
-          data: {
-            status: "RELEASED",
-          },
-        });
-      }
       const inventoryRows = await tx.$queryRaw<
         {
           id: string;

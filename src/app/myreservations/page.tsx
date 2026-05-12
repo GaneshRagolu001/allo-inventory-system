@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 export default function ReservationsPage() {
   const [reservations, setReservations] = useState<any[]>([]);
 
+  const [currentTime, setCurrentTime] = useState(Date.now());
+
   const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState("");
@@ -31,6 +33,14 @@ export default function ReservationsPage() {
 
   useEffect(() => {
     fetchReservations();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   async function confirmReservation(id: string) {
@@ -73,6 +83,20 @@ export default function ReservationsPage() {
     return <main className="p-8">Loading...</main>;
   }
 
+  function getRemainingTime(expiresAt: string) {
+    const remaining = new Date(expiresAt).getTime() - currentTime;
+
+    if (remaining <= 0) {
+      return "Expired";
+    }
+
+    const minutes = Math.floor(remaining / 1000 / 60);
+
+    const seconds = Math.floor((remaining / 1000) % 60);
+
+    return `${minutes}m ${seconds}s`;
+  }
+
   return (
     <main className="min-h-screen p-8">
       <h1 className="text-3xl font-bold mb-8">Reservations</h1>
@@ -94,27 +118,39 @@ export default function ReservationsPage() {
 
             <p className="mb-1">Status: {reservation.status}</p>
 
-            <p className="mb-4">
-              Expires: {new Date(reservation.expiresAt).toLocaleString()}
+            <p className="mb-2">
+              Expires At: {new Date(reservation.expiresAt).toLocaleString()}
             </p>
 
-            {reservation.status === "PENDING" && (
-              <div className="flex gap-4">
-                <button
-                  onClick={() => confirmReservation(reservation.id)}
-                  className="bg-green-600 text-white px-4 py-2 rounded"
-                >
-                  Confirm
-                </button>
+            <p className="mb-4 font-semibold">
+              Time Remaining: {getRemainingTime(reservation.expiresAt)}
+            </p>
 
-                <button
-                  onClick={() => releaseReservation(reservation.id)}
-                  className="bg-red-600 text-white px-4 py-2 rounded"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
+            {getRemainingTime(reservation.expiresAt) === "Expired" &&
+              reservation.status === "PENDING" && (
+                <p className="text-red-600 font-bold mb-4">
+                  Reservation Expired
+                </p>
+              )}
+
+            {reservation.status === "PENDING" &&
+              getRemainingTime(reservation.expiresAt) !== "Expired" && (
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => confirmReservation(reservation.id)}
+                    className="bg-green-600 text-white px-4 py-2 rounded"
+                  >
+                    Confirm
+                  </button>
+
+                  <button
+                    onClick={() => releaseReservation(reservation.id)}
+                    className="bg-red-600 text-white px-4 py-2 rounded"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
           </div>
         ))}
       </div>
