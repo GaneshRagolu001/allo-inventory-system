@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type Warehouse = {
   id: string;
@@ -63,15 +64,21 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen bg-gray-100 p-8">
+      <Link
+        href="/"
+        className="bg-black text-white px-5 py-3 rounded-lg hover:bg-gray-800 transition"
+      >
+        Back Home
+      </Link>
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-md p-8">
         <div className="flex justify-between">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">Admin Panel</h1>
-          <a
+          <Link
             href="/admin/inventory"
             className="bg-gray-600 text-white px-5 py-3 mb-8 rounded-lg hover:bg-gray-700 transition"
           >
             Manage Inventory
-          </a>
+          </Link>
         </div>
 
         {message && (

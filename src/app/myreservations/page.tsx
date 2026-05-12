@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import NotificationModal from "@/components/NotificationModal";
 
 type Reservation = {
@@ -184,12 +185,12 @@ export default function ReservationsPage() {
             </p>
           </div>
 
-          <a
+          <Link
             href="/"
             className="bg-black text-white px-5 py-3 rounded-lg hover:bg-gray-800 transition"
           >
             Back Home
-          </a>
+          </Link>
         </div>
 
         {error && (

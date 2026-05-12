@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type InventoryItem = {
   warehouseId: string;
   warehouseName: string;
@@ -42,25 +44,25 @@ export default async function Home() {
           </div>
 
           <div className="flex gap-4">
-            <a
+            <Link
               href="/warehouses"
               className="bg-gray-700 text-white px-5 py-3 rounded-lg hover:bg-gray-800 transition"
             >
               Warehouses
-            </a>
-            <a
+            </Link>
+            <Link
               href="/myreservations"
               className="bg-black text-white px-5 py-3 rounded-lg hover:bg-gray-800 transition"
             >
               View Reservations
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/admin"
               className="bg-gray-600 text-white px-5 py-3 rounded-lg hover:bg-gray-700 transition"
             >
               Admin Panel
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -107,23 +109,12 @@ export default async function Home() {
                       </div>
 
                       {item.availableUnits > 0 ? (
-                        <form action="/reservation" method="GET">
-                          <input
-                            type="hidden"
-                            name="productId"
-                            value={product.id}
-                          />
-
-                          <input
-                            type="hidden"
-                            name="warehouseId"
-                            value={item.warehouseId}
-                          />
-
-                          <button className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition cursor-pointer">
-                            Reserve
-                          </button>
-                        </form>
+                        <Link
+                          href={`/reservation?productId=${product.id}&warehouseId=${item.warehouseId}`}
+                          className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition cursor-pointer"
+                        >
+                          Reserve
+                        </Link>
                       ) : (
                         <span className="text-red-600 font-semibold">
                           Out of Stock

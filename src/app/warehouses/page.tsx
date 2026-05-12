@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 async function getWarehouses() {
   const res = await fetch("http://localhost:3000/api/warehouses", {
     cache: "no-store",
@@ -19,9 +21,9 @@ export default async function WarehousesPage() {
         <div className="flex items-center justify-between mb-10">
           <h1 className="text-4xl font-bold text-gray-900">Warehouses</h1>
 
-          <a href="/" className="bg-black text-white px-5 py-3 rounded-lg">
+          <Link href="/" className="bg-black text-white px-5 py-3 rounded-lg">
             Back Home
-          </a>
+          </Link>
         </div>
 
         <div className="grid gap-8">

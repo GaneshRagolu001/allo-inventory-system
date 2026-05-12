@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import NotificationModal from "@/components/NotificationModal";
 
 type Inventory = {
@@ -144,12 +145,12 @@ export default function InventoryAdminPage() {
             </p>
           </div>
 
-          <a
+          <Link
             href="/admin"
             className="bg-black text-white px-5 py-3 rounded-lg hover:bg-gray-800 transition"
           >
             Back Admin
-          </a>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -215,7 +216,7 @@ export default function InventoryAdminPage() {
                           [item.id]: Number(e.target.value),
                         }))
                       }
-                      className="flex-1 border border-gray-300 rounded-lg px-4 py-2"
+                      className="flex-1 border border-gray-300 text-gray-800 rounded-lg px-4 py-2"
                     />
 
                     <button

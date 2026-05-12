@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import NotificationModal from "@/components/NotificationModal";
 
 type Reservation = {
@@ -12,6 +13,7 @@ type Reservation = {
 
 export default function ReservationPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const productId = searchParams.get("productId");
 
@@ -99,7 +101,7 @@ export default function ReservationPage() {
         throw new Error(data.error);
       }
 
-      window.location.href = "/reservations";
+      router.push("/myreservations");
     } catch (err: any) {
       setError(err.message);
     }
@@ -119,7 +121,7 @@ export default function ReservationPage() {
         throw new Error(data.error);
       }
 
-      window.location.href = "/reservations";
+      router.push("/myreservations");
     } catch (err: any) {
       setError(err.message);
     }
@@ -139,12 +141,12 @@ export default function ReservationPage() {
             </p>
           </div>
 
-          <a
+          <Link
             href="/"
             className="bg-black text-white px-5 py-3 rounded-lg hover:bg-gray-800 transition"
           >
             Back Home
-          </a>
+          </Link>
         </div>
 
         {error && (
