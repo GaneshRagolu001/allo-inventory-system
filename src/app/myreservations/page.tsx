@@ -60,11 +60,11 @@ export default function ReservationsPage() {
 
     let refreshInterval: NodeJS.Timeout;
 
-    const hasPendingReservations = reservations.some(
+    const PendingReservations = reservations.some(
       (reservation) => reservation.status === "PENDING",
     );
 
-    if (hasPendingReservations) {
+    if (PendingReservations) {
       refreshInterval = setInterval(() => {
         fetchReservations();
       }, 5000);

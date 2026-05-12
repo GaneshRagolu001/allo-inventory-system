@@ -64,10 +64,18 @@ export default function AdminPage() {
   return (
     <main className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-md p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Admin Panel</h1>
+        <div className="flex justify-between">
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">Admin Panel</h1>
+          <a
+            href="/admin/inventory"
+            className="bg-gray-600 text-white px-5 py-3 mb-8 rounded-lg hover:bg-gray-700 transition"
+          >
+            Manage Inventory
+          </a>
+        </div>
 
         {message && (
-          <div className="mb-4 bg-blue-100 text-blue-700 p-3 rounded">
+          <div className="mb-4 bg-blue-100 text-gray-700 p-3 rounded">
             {message}
           </div>
         )}
