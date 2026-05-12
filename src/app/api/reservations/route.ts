@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const validatedData = reservationSchema.parse(body);
 
     const { productId, warehouseId, quantity } = validatedData;
-
+    console.log(body);
     const result = await prisma.$transaction(async (tx) => {
       const inventoryRows = await tx.$queryRaw<
         {
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
           AND "warehouseId" = ${warehouseId}
           FOR UPDATE
         `;
-
+      console.log(inventoryRows);
       const inventory = inventoryRows[0];
 
       if (!inventory) {
@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        error: "Failed to create reservation",
+        error: error instanceof Error ? error.message : "Unknown error",
       },
       {
         status: 500,

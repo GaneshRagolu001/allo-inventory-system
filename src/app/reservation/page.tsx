@@ -50,7 +50,7 @@ export default function ReservationPage() {
     try {
       setLoading(true);
       setError("");
-
+      
       const res = await fetch("/api/reservations", {
         method: "POST",
         headers: {
@@ -62,7 +62,7 @@ export default function ReservationPage() {
           quantity: 1,
         }),
       });
-
+      
       const data = await res.json();
 
       if (!res.ok) {
