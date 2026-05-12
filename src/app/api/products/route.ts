@@ -16,6 +16,7 @@ export async function GET() {
     const formattedProducts = products.map((product) => ({
       id: product.id,
       name: product.name,
+      imageUrl: product.imageUrl ?? null,
       inventory: product.inventory.map((item) => ({
         warehouseId: item.warehouseId,
         warehouseName: item.warehouse.name,
