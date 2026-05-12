@@ -58,9 +58,17 @@ export default function ReservationsPage() {
   useEffect(() => {
     fetchReservations();
 
-    const refreshInterval = setInterval(() => {
-      fetchReservations();
-    }, 5000);
+    let refreshInterval: NodeJS.Timeout;
+
+    const hasPendingReservations = reservations.some(
+      (reservation) => reservation.status === "PENDING",
+    );
+
+    if (hasPendingReservations) {
+      refreshInterval = setInterval(() => {
+        fetchReservations();
+      }, 5000);
+    }
 
     let timerInterval: NodeJS.Timeout;
 
