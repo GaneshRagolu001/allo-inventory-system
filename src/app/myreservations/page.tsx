@@ -33,6 +33,12 @@ export default function ReservationsPage() {
 
   useEffect(() => {
     fetchReservations();
+
+    const interval = setInterval(() => {
+      fetchReservations();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -116,7 +122,20 @@ export default function ReservationsPage() {
 
             <p className="mb-1">Quantity: {reservation.quantity}</p>
 
-            <p className="mb-1">Status: {reservation.status}</p>
+            <p className="mb-1">
+              Status:
+              <span
+                className={`ml-2 font-semibold ${
+                  reservation.status === "CONFIRMED"
+                    ? "text-green-600"
+                    : reservation.status === "RELEASED"
+                      ? "text-red-600"
+                      : "text-yellow-600"
+                }`}
+              >
+                {reservation.status}
+              </span>
+            </p>
 
             <p className="mb-2">
               Expires At: {new Date(reservation.expiresAt).toLocaleString()}
@@ -154,6 +173,11 @@ export default function ReservationsPage() {
           </div>
         ))}
       </div>
+      {reservations.length === 0 && (
+        <div className="bg-white p-8 rounded-xl text-center shadow">
+          <p className="text-lg">No reservations found</p>
+        </div>
+      )}
     </main>
   );
 }

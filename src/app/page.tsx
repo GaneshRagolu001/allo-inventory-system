@@ -14,47 +14,65 @@ export default async function Home() {
   const products = await getProducts();
 
   return (
-    <main className="min-h-screen p-8">
-      <h1 className="text-3xl font-bold mb-8">Inventory System</h1>
-      <a href="/myreservations" className="underline mb-6 inline-block">
-        View Reservations
-      </a>
-      ;
-      <div className="grid gap-6">
-        {products.map((product: any) => (
-          <div key={product.id} className="border rounded-lg p-6 shadow">
-            <h2 className="text-2xl font-semibold mb-4">{product.name}</h2>
+    <main className="min-h-screen bg-gray-100 p-8">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-bold">Inventory System</h1>
 
-            <div className="space-y-3">
-              {product.inventory.map((item: any) => (
-                <div
-                  key={item.warehouseId}
-                  className="flex items-center justify-between border p-4 rounded"
-                >
-                  <div>
-                    <p className="font-medium">{item.warehouseName}</p>
+          <a
+            href="/reservations"
+            className="bg-black text-white px-4 py-2 rounded"
+          >
+            View Reservations
+          </a>
+        </div>
 
-                    <p>Available Units: {item.availableUnits}</p>
+        <div className="grid gap-6">
+          {products.map((product: any) => (
+            <div key={product.id} className="bg-white rounded-xl p-6 shadow-md">
+              <h2 className="text-2xl font-semibold mb-4">{product.name}</h2>
+
+              <div className="space-y-3">
+                {product.inventory.map((item: any) => (
+                  <div
+                    key={item.warehouseId}
+                    className="flex items-center justify-between border p-4 rounded"
+                  >
+                    <div>
+                      <p className="font-medium">{item.warehouseName}</p>
+
+                      <p>Available Units: {item.availableUnits}</p>
+                    </div>
+
+                    {item.availableUnits > 0 ? (
+                      <form action="/reservation" method="GET">
+                        <input
+                          type="hidden"
+                          name="productId"
+                          value={product.id}
+                        />
+
+                        <input
+                          type="hidden"
+                          name="warehouseId"
+                          value={item.warehouseId}
+                        />
+
+                        <button className="bg-black text-white px-4 py-2 rounded cursor-pointer">
+                          Reserve
+                        </button>
+                      </form>
+                    ) : (
+                      <span className="text-red-600 font-semibold">
+                        Out of Stock
+                      </span>
+                    )}
                   </div>
-
-                  <form action="/reservation" method="GET">
-                    <input type="hidden" name="productId" value={product.id} />
-
-                    <input
-                      type="hidden"
-                      name="warehouseId"
-                      value={item.warehouseId}
-                    />
-
-                    <button className="bg-black text-white px-4 py-2 rounded cursor-pointer">
-                      Reserve
-                    </button>
-                  </form>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </main>
   );
