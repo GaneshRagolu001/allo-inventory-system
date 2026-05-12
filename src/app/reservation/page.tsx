@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import NotificationModal from "@/components/NotificationModal";
 
 type Reservation = {
   id: string;
@@ -23,6 +24,13 @@ export default function ReservationPage() {
   const [error, setError] = useState("");
 
   const [currentTime, setCurrentTime] = useState(Date.now());
+
+  const [modal, setModal] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "success" as "success" | "error",
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -50,7 +58,7 @@ export default function ReservationPage() {
     try {
       setLoading(true);
       setError("");
-      
+
       const res = await fetch("/api/reservations", {
         method: "POST",
         headers: {
@@ -62,7 +70,7 @@ export default function ReservationPage() {
           quantity: 1,
         }),
       });
-      
+
       const data = await res.json();
 
       if (!res.ok) {

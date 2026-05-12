@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import NotificationModal from "@/components/NotificationModal";
 
 type Reservation = {
   id: string;
@@ -26,6 +27,13 @@ export default function ReservationsPage() {
   const [error, setError] = useState("");
 
   const [currentTime, setCurrentTime] = useState(Date.now());
+
+  const [modal, setModal] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "success" as "success" | "error",
+  });
 
   async function fetchReservations() {
     try {
@@ -54,15 +62,26 @@ export default function ReservationsPage() {
       fetchReservations();
     }, 5000);
 
-    const timerInterval = setInterval(() => {
-      setCurrentTime(Date.now());
-    }, 1000);
+    let timerInterval: NodeJS.Timeout;
+
+    const hasPendingReservations = reservations.some(
+      (reservation) => reservation.status === "PENDING",
+    );
+
+    if (hasPendingReservations) {
+      timerInterval = setInterval(() => {
+        setCurrentTime(Date.now());
+      }, 1000);
+    }
 
     return () => {
       clearInterval(refreshInterval);
-      clearInterval(timerInterval);
+
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
     };
-  }, []);
+  }, [reservations]);
 
   function getRemainingTime(expiresAt: string) {
     const remaining = new Date(expiresAt).getTime() - currentTime;
@@ -90,9 +109,21 @@ export default function ReservationsPage() {
         throw new Error(data.error);
       }
 
+      setModal({
+        isOpen: true,
+        title: "Reservation Confirmed",
+        message: "The reservation has been successfully confirmed.",
+        type: "success",
+      });
+
       fetchReservations();
     } catch (err: any) {
-      alert(err.message);
+      setModal({
+        isOpen: true,
+        title: "Action Failed",
+        message: err.message,
+        type: "error",
+      });
     }
   }
 
@@ -108,9 +139,20 @@ export default function ReservationsPage() {
         throw new Error(data.error);
       }
 
+      setModal({
+        isOpen: true,
+        title: "Reservation Cancelled",
+        message: "The reservation has been successfully released.",
+        type: "success",
+      });
       fetchReservations();
     } catch (err: any) {
-      alert(err.message);
+      setModal({
+        isOpen: true,
+        title: "Action Failed",
+        message: err.message,
+        type: "error",
+      });
     }
   }
 
@@ -275,6 +317,18 @@ export default function ReservationsPage() {
           </div>
         )}
       </div>
+      <NotificationModal
+        isOpen={modal.isOpen}
+        title={modal.title}
+        message={modal.message}
+        type={modal.type}
+        onClose={() =>
+          setModal({
+            ...modal,
+            isOpen: false,
+          })
+        }
+      />
     </main>
   );
 }
