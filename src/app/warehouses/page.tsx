@@ -1,15 +1,19 @@
 import Link from "next/link";
 
+import { prisma } from "@/lib/prisma";
+
 async function getWarehouses() {
-  const res = await fetch("http://localhost:3000/api/warehouses", {
-    cache: "no-store",
+  const warehouses = await prisma.warehouse.findMany({
+    include: {
+      inventory: {
+        include: {
+          product: true,
+        },
+      },
+    },
   });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch warehouses");
-  }
-
-  return res.json();
+  return warehouses;
 }
 
 export default async function WarehousesPage() {

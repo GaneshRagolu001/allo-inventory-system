@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+import { releaseExpiredReservations } from "@/lib/releaseExpiredReservations";
 
 type InventoryItem = {
   warehouseId: string;
@@ -16,15 +18,29 @@ type Product = {
 };
 
 async function getProducts(): Promise<Product[]> {
-  const res = await fetch("http://localhost:3000/api/products", {
-    cache: "no-store",
+  await releaseExpiredReservations();
+  const products = await prisma.product.findMany({
+    include: {
+      inventory: {
+        include: {
+          warehouse: true,
+        },
+      },
+    },
   });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch products");
-  }
-
-  return res.json();
+  return products.map((product) => ({
+    id: product.id,
+    name: product.name,
+    imageUrl: product.imageUrl ?? null,
+    inventory: product.inventory.map((item) => ({
+      warehouseId: item.warehouseId,
+      warehouseName: item.warehouse.name,
+      totalUnits: item.totalUnits,
+      reservedUnits: item.reservedUnits,
+      availableUnits: item.totalUnits - item.reservedUnits,
+    })),
+  }));
 }
 
 export default async function Home() {
