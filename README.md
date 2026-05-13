@@ -10,7 +10,7 @@ This system enables customers to make temporary reservations of inventory at the
 
 ## Application URL
 
-[ADD_DEPLOYED_URL_HERE]
+[https://allo-inventory-system-rlnb.vercel.app/](https://allo-inventory-system-rlnb.vercel.app/)
 
 ---
 
@@ -230,29 +230,21 @@ This validates the proper functioning of transactional locking behavior during c
 
 ---
 
-# Reservation Expiry Mechanism
+# Reservation Expiry & Cleanup
 
-Reservations automatically expire after a predetermined duration.
+Reservations automatically expire after 10 minutes. The system uses a two-tier cleanup strategy:
 
-A scheduled Vercel Cron Job operates periodically to:
+### 1. Lazy Release (on Read)
+Whenever a user fetches the product listing via `GET /api/products`, the system automatically detects and releases any expired `PENDING` reservations. This ensures that stock is returned to the available pool immediately when it's most needed.
 
-1. detect expired reservations
-2. free up reserved stock
-3. restore inventory availability
-4. update the status of reservations to RELEASED
+### 2. Scheduled Record Purging (Cron)
+A scheduled Vercel Cron Job operates daily to purge old reservation records from the database. This prevents the database from growing indefinitely on free-tier hosting:
+- `RELEASED` reservations older than 1 day are deleted.
+- `CONFIRMED` reservations older than 7 days are deleted.
 
 ---
 
-# Reservation Retention Policy
 
-Due to the utilization of free-tier hosted PostgreSQL infrastructure for the project, reservation cleanup policies have been established to prevent unnecessary growth of the database.
-
-### Cleanup Rules
-
-- RELEASED reservations older than 1 day are deleted
-- CONFIRMED reservations older than 7 days are deleted
-
-Cleanup runs automatically using scheduled cron jobs.
 
 ---
 
