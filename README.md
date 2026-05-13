@@ -275,7 +275,7 @@ Cleanup runs automatically using scheduled cron jobs.
 ## 1. Clone Repository
 
 ```bash
-git clone [YOUR_REPOSITORY_URL]
+git clone https://github.com/GaneshRagolu001/allo-inventory-system
 cd allo-inventory-system
 ```
 

@@ -34,10 +34,10 @@ async function main() {
       data: { imageUrl },
     });
 
-    console.log(`✓ Updated "${product.name}" → ${imageUrl}`);
+    console.log(`Updated "${product.name}" → ${imageUrl}`);
   }
 
-  console.log("\n✅ All product images updated successfully!");
+  console.log("\n All product images updated successfully!");
 }
 
 main()

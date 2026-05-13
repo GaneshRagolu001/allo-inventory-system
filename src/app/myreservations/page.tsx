@@ -56,41 +56,30 @@ export default function ReservationsPage() {
     }
   }
 
+  const hasPendingReservations = reservations.some(
+    (reservation) => reservation.status === "PENDING",
+  );
+
   useEffect(() => {
     fetchReservations();
+  }, []);
 
-    let refreshInterval: NodeJS.Timeout;
+  useEffect(() => {
+    if (!hasPendingReservations) return;
 
-    const PendingReservations = reservations.some(
-      (reservation) => reservation.status === "PENDING",
-    );
+    const refreshInterval = setInterval(() => {
+      fetchReservations();
+    }, 5000);
 
-    if (PendingReservations) {
-      refreshInterval = setInterval(() => {
-        fetchReservations();
-      }, 5000);
-    }
-
-    let timerInterval: NodeJS.Timeout;
-
-    const hasPendingReservations = reservations.some(
-      (reservation) => reservation.status === "PENDING",
-    );
-
-    if (hasPendingReservations) {
-      timerInterval = setInterval(() => {
-        setCurrentTime(Date.now());
-      }, 1000);
-    }
+    const timerInterval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000);
 
     return () => {
       clearInterval(refreshInterval);
-
-      if (timerInterval) {
-        clearInterval(timerInterval);
-      }
+      clearInterval(timerInterval);
     };
-  }, [reservations]);
+  }, [hasPendingReservations]);
 
   function getRemainingTime(expiresAt: string) {
     const remaining = new Date(expiresAt).getTime() - currentTime;
