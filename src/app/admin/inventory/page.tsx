@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import NotificationModal from "@/components/NotificationModal";
-
+type Product = {
+  id: string;
+  name: string;
+};
 type Inventory = {
   id: string;
   totalUnits: number;
@@ -23,6 +26,20 @@ type Inventory = {
 
 export default function InventoryAdminPage() {
   const [inventory, setInventory] = useState<Inventory[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  const [warehouses, setWarehouses] = useState<
+    {
+      id: string;
+      name: string;
+    }[]
+  >([]);
+
+  const [assignForm, setAssignForm] = useState({
+    productId: "",
+    warehouseId: "",
+    quantity: "",
+  });
 
   const [loading, setLoading] = useState(true);
 

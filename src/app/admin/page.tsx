@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import NotificationModal from "@/components/NotificationModal";
 
 type Warehouse = {
   id: string;
@@ -18,7 +19,12 @@ export default function AdminPage() {
     totalUnits: "",
   });
 
-  const [message, setMessage] = useState("");
+  const [modal, setModal] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "success" as "success" | "error",
+  });
 
   async function fetchWarehouses() {
     const res = await fetch("/api/warehouses");
@@ -35,8 +41,6 @@ export default function AdminPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    setMessage("");
-
     const res = await fetch("/api/admin/products", {
       method: "POST",
       headers: {
@@ -48,11 +52,21 @@ export default function AdminPage() {
     const data = await res.json();
 
     if (!res.ok) {
-      setMessage(data.error);
+      setModal({
+        isOpen: true,
+        title: "Creation Failed",
+        message: data.error,
+        type: "error",
+      });
       return;
     }
 
-    setMessage("Product created successfully");
+    setModal({
+      isOpen: true,
+      title: "Product Created",
+      message: "The product was created successfully.",
+      type: "success",
+    });
 
     setFormData({
       name: "",
@@ -80,12 +94,6 @@ export default function AdminPage() {
             Manage Inventory
           </Link>
         </div>
-
-        {message && (
-          <div className="mb-4 bg-blue-100 text-gray-700 p-3 rounded">
-            {message}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
@@ -159,6 +167,8 @@ export default function AdminPage() {
             <input
               type="number"
               value={formData.totalUnits}
+              min="1"
+              step="1"
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -178,6 +188,18 @@ export default function AdminPage() {
           </button>
         </form>
       </div>
+      <NotificationModal
+        isOpen={modal.isOpen}
+        title={modal.title}
+        message={modal.message}
+        type={modal.type}
+        onClose={() =>
+          setModal({
+            ...modal,
+            isOpen: false,
+          })
+        }
+      />
     </main>
   );
 }

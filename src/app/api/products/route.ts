@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { releaseExpiredReservations } from "@/lib/releaseExpiredReservations";
 
 export async function GET() {
   try {
+    await releaseExpiredReservations();
     const products = await prisma.product.findMany({
       include: {
         inventory: {
@@ -22,8 +24,7 @@ export async function GET() {
         warehouseName: item.warehouse.name,
         totalUnits: item.totalUnits,
         reservedUnits: item.reservedUnits,
-        availableUnits:
-          item.totalUnits - item.reservedUnits,
+        availableUnits: item.totalUnits - item.reservedUnits,
       })),
     }));
 
@@ -33,7 +34,7 @@ export async function GET() {
 
     return NextResponse.json(
       { error: "Failed to fetch products" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

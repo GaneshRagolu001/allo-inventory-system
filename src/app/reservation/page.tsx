@@ -13,7 +13,6 @@ type Reservation = {
 
 export default function ReservationPage() {
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const productId = searchParams.get("productId");
 
@@ -33,6 +32,10 @@ export default function ReservationPage() {
     message: "",
     type: "success" as "success" | "error",
   });
+
+  const router = useRouter();
+
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -101,9 +104,23 @@ export default function ReservationPage() {
         throw new Error(data.error);
       }
 
-      router.push("/myreservations");
+      setModal({
+        isOpen: true,
+        title: "Reservation Confirmed",
+        message: "Your purchase has been confirmed successfully.",
+        type: "success",
+      });
+
+      setTimeout(() => {
+        router.push("/myreservations");
+      }, 2000);
     } catch (err: any) {
-      setError(err.message);
+      setModal({
+        isOpen: true,
+        title: "Action Failed",
+        message: err.message,
+        type: "error",
+      });
     }
   }
 
@@ -121,9 +138,23 @@ export default function ReservationPage() {
         throw new Error(data.error);
       }
 
-      router.push("/myreservations");
+      setModal({
+        isOpen: true,
+        title: "Reservation Cancelled",
+        message: "The reservation has been released.",
+        type: "success",
+      });
+
+      setTimeout(() => {
+        router.push("/myreservations");
+      }, 2000);
     } catch (err: any) {
-      setError(err.message);
+      setModal({
+        isOpen: true,
+        title: "Action Failed",
+        message: err.message,
+        type: "error",
+      });
     }
   }
 
@@ -251,6 +282,13 @@ export default function ReservationPage() {
           </div>
         )}
       </div>
+      <NotificationModal
+        isOpen={modal.isOpen}
+        title={modal.title}
+        message={modal.message}
+        type={modal.type}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+      />
     </main>
   );
 }
