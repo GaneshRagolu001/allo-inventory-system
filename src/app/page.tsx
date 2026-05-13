@@ -2,6 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { releaseExpiredReservations } from "@/lib/releaseExpiredReservations";
 
+export const dynamic = "force-dynamic";
+
 type InventoryItem = {
   warehouseId: string;
   warehouseName: string;

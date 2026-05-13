@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 type Params = {
   params: Promise<{
@@ -58,6 +59,7 @@ export async function POST(req: NextRequest, { params }: Params) {
       });
     });
 
+    revalidatePath("/");
     return NextResponse.json({
       message: "Reservation released",
     });

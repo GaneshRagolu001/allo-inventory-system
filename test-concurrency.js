@@ -5,7 +5,7 @@ const body = {
 };
 
 async function sendRequest() {
-  const res = await fetch("http://localhost:3000/api/reservations", {
+  const res = await fetch("https://allo-inventory-system-rlnb.vercel.app/api/reservations", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

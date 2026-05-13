@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
 const reservationSchema = z.object({
   productId: z.string(),
@@ -69,6 +70,7 @@ export async function POST(req: NextRequest) {
       return reservation;
     });
 
+    revalidatePath("/");
     return NextResponse.json(result, {
       status: 201,
     });
